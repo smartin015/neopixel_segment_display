@@ -2,6 +2,8 @@
 #include <ESP8266WiFi.h>
 #include <PubSubClient.h>
 
+#define HOSTNAME "countdown2"
+
 const char* ssid = "robotoverlords";
 const char* password = "oakdale43";
 const char* mqtt_server = "192.168.0.8";
@@ -88,7 +90,9 @@ void reconnect() {
  if (client.connect("segdisplay")) {
   Serial.println("connected");
   // ... and subscribe to topic
-  client.subscribe("/segment");
+  String topic = "/" HOSTNAME;
+  client.subscribe(topic.c_str());
+  Serial.println("Subscribed to " + topic);
  } else {
   Serial.print("failed, rc=");
   Serial.print(client.state());
@@ -110,6 +114,7 @@ void setup() {
   /* Explicitly set the ESP8266 to be a WiFi-client, otherwise, it by default,
      would try to act as both a client and an access-point and could cause
      network-issues with your other WiFi-devices on your WiFi-network. */
+  WiFi.hostname(HOSTNAME);
   WiFi.mode(WIFI_STA);
   WiFi.begin(ssid, password);
 
